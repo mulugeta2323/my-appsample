@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
+var nodemailer = require('nodemailer');
+
 // Load User model
 const User = require('../models/User');
 
@@ -10,6 +12,39 @@ router.get('/login', (req, res) => res.render('login'));
 
 // Register Page
 router.get('/register', (req, res) => res.render('register'));
+
+//Forgot Password
+router.get('/forgot', (req, res) => res.render('forgot'));
+
+// Forgot
+router.post('/forgot', (req, res) => {
+  const {email} = req.body;
+
+  if(email === ''){
+    req.flash(
+            'error_msg',
+            'Please enter valid email');    
+  }
+
+  User.findOne({ email: email }).then(user => {
+    if(user) {
+
+      console.log('Email exists')
+      res.send( req.flash (
+        'success_msg',
+        'Password reset email sent to ' + email,
+      ));
+      res.redirect('/users/login');
+    } else {
+      console.log('Email does not exist')
+      res.send( req.flash (
+        'error_msg',
+        email + ' does not exist in database'
+      ));
+      res.redirect('/users/forgot');    
+    }
+  }).catch(err => console.log(err));
+})
 
 // Register
 router.post('/register', (req, res) => {

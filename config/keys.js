@@ -1,3 +1,3 @@
 module.exports = {
-  mongoURI: 'ADD_MONGO_URI_HERE'
+  mongoURI: 'mongodb://admin:1password@ds141654.mlab.com:41654/fcc'
 };
